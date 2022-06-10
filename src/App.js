@@ -8,7 +8,6 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
-import IconButton from "@mui/material/IconButton";
 
 // material-ui icon
 import DoneAllIcon from "@mui/icons-material/DoneAll";
@@ -60,15 +59,12 @@ function App() {
   const handleChangeContinueButton = () => {
     setStage(stage + 1);
   };
-  const handleChangeImage = (e) => {
-    setImage(e.target.value);
-  };
 
   useEffect(() => {
     console.log("image", image);
   }, [image]);
 
-  const finish = () => {
+  const send = () => {
     let data = new FormData();
     data.append("image", image);
     data.append("content", message);
@@ -97,7 +93,7 @@ function App() {
   return (
     <div className="App">
       <Appbar />
-      <header className="App-header">
+      <div className="App-header">
         {stage === 0 && (
           <>
             <NicknameTextField
@@ -164,7 +160,7 @@ function App() {
             </label>
 
             <Button
-              onClick={finish}
+              onClick={send}
               color="primary"
               disabled={!message || message.length < 3}
               variant="contained"
@@ -185,7 +181,7 @@ function App() {
             <DoneAllIcon sx={{ fontSize: 320 }} />
           </>
         )}
-      </header>
+      </div>
     </div>
   );
 }
