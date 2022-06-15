@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import axios from "axios";
 import FormData from "form-data";
 
@@ -46,14 +46,14 @@ const NicknameTextField = styled(TextField)({
 
 function App() {
   const [stage, setStage] = useState(0);
-  const [nickname, setNickname] = useState("");
-  const [message, setMessage] = useState("");
-  const [image, setImage] = useState(null);
+  const [nickname, setNickname] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [image, setImage] = useState<File>();
 
-  const handleChangeNickname = (e) => {
+  const handleChangeNickname = (e: ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
   };
-  const handleChangeMessage = (e) => {
+  const handleChangeMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
   };
   const handleChangeContinueButton = () => {
@@ -72,7 +72,7 @@ function App() {
     data.append("avatar_url", process.env.REACT_APP_DISCORD_WEBHOOK_IMAGE_URL);
 
     axios
-      .post(process.env.REACT_APP_DISCORD_WEBHOOK_URL, data, {
+      .post(process.env.REACT_APP_DISCORD_WEBHOOK_URL as string, data, {
         headers: {
           accept: "application/json",
           "Accept-Language": "en-US,en;q=0.8",
@@ -96,11 +96,16 @@ function App() {
       <div className="App-header">
         {stage === 0 && (
           <>
+            <h1>
+              Write your name,
+              <br />
+              add picture to report message and send
+            </h1>
             <NicknameTextField
               id="nickname"
               autoComplete="off"
               onChange={handleChangeNickname}
-              label="nickname"
+              label="Your Name"
               margin="normal"
               inputProps={{
                 min: 0,
@@ -110,14 +115,14 @@ function App() {
 
             <Button
               onClick={handleChangeContinueButton}
-              color="primary"
+              color="inherit"
               disabled={
                 !nickname || nickname.length < 3 || nickname.length >= 8
               }
               variant="contained"
               endIcon={<SendIcon />}
               size="large"
-              className="mt-4"
+              className="mt-4 text-body"
             >
               continue
             </Button>
@@ -129,7 +134,7 @@ function App() {
             <TextareaAutosize
               onChange={handleChangeMessage}
               aria-label="empty textarea"
-              placeholder="Your Message.."
+              placeholder="Your Report Message.."
               style={{
                 width: "50%",
                 height: 300,
@@ -146,14 +151,19 @@ function App() {
                 multiple
                 type="file"
                 onChange={(event) => {
-                  console.log(event.target.files[0]);
-                  setImage(event.target.files[0]);
+                  const files = event.target.files;
+                  if (files !== null && files.length > 0) {
+                    console.log(files[0]);
+                    setImage(files[0]);
+                  }
                 }}
               />
               <Button
                 variant="contained"
                 component="span"
                 endIcon={<PhotoCamera />}
+                color="inherit"
+                className="text-body"
               >
                 Image
               </Button>
@@ -161,12 +171,12 @@ function App() {
 
             <Button
               onClick={send}
-              color="primary"
+              color="inherit"
               disabled={!message || message.length < 3}
               variant="contained"
               endIcon={<SendIcon />}
               size="large"
-              className="mt-4"
+              className="mt-4 text-body"
             >
               Send
             </Button>
